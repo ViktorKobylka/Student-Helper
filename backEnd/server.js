@@ -11,8 +11,13 @@ const port = 4000;
 app.use(bodyParser.json());
 app.use(cors());
 
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
+
+
 //connect to MongoDB
-mongoose.connect('mongodb+srv://admin:admin@student-helper.lwhbhrt.mongodb.net/');
+mongoose.connect('mongodb+srv://admin:admin@student-helper.lwhbhrt.mongodb.net/')
 
 //define the chema for user authentication
 const loginSchema = new mongoose.Schema({
@@ -23,3 +28,15 @@ const loginSchema = new mongoose.Schema({
 
 //model for the UserInfo collection
 const User = mongoose.model('UserInfo', loginSchema);
+
+//API endpoint to create new User 
+app.post('/api/registerData',async (req, res)=>{
+    try {
+        const { username, email, password } = req.body;
+        const newUser = new User({ username, email, password });
+        await newUser.save();
+        res.status(201).json({ message: "User registered successfully" }); 
+    } catch (error) {
+        res.status(500).json({ message: "Error registering user" }); //handles errors
+    }
+})

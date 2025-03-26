@@ -1,10 +1,33 @@
+import axios from "axios";
+import { useState } from "react";
 import logotype from '../styles/images/logotype.jpg';
 import person from '../styles/images/person_landing_page.jpg';
 import Popup from 'reactjs-popup';
-import '../styles/LandingPage.css'
+import '../styles/LandingPage.css';
 
 //LandingPage component: represents the landing page of the "Student Helper" website
 const LandingPage = ()=>{
+    //state for registration form
+    const [registerUsername, setRegisterUsername] = useState('');
+    const [registerEmail, setRegisterEmail] = useState('');
+    const [registerPassword, setRegisterPassword] = useState('');
+
+    //handle register 
+    const handleRegister = (e) => {
+        e.preventDefault();
+        const registerData = { 
+            username: registerUsername, 
+            email: registerEmail, 
+            password: registerPassword 
+        };
+        //send POST request to server
+        axios.post('http://localhost:4000/api/registerData',registerData);
+        //clear fields
+        setRegisterUsername('');
+        setRegisterEmail('');
+        setRegisterPassword('');
+    }
+
     return(
         <div className="landingPage-cont">
             <header>
@@ -43,18 +66,18 @@ const LandingPage = ()=>{
                                 <h2>Register</h2>
                                 <div>
                                     <label>Username:</label>
-                                    <input type="text" placeholder="Enter your username" />
+                                    <input type="text" placeholder="Enter your username" value={registerUsername} onChange={(e) => setRegisterUsername(e.target.value)}/>
                                 </div>
                                 <div>
                                     <label>Email:</label>
-                                    <input type="email" placeholder="Enter your email" />
+                                    <input type="email" placeholder="Enter your email" value={registerEmail} onChange={(e) => setRegisterEmail(e.target.value)} />
                                 </div>
                                 <div>
                                     <label>Password:</label>
-                                    <input type="password" placeholder="Enter your password" />
+                                    <input type="password" placeholder="Enter your password" value={registerPassword} onChange={(e) => setRegisterPassword(e.target.value)} />
                                 </div>
                                 <div>
-                                    <button className="login-btn">Register</button>
+                                    <button className="login-btn" onClick={handleRegister}>Register</button>
                                 </div>
                             </div>
                         )}
