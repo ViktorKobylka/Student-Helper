@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logotype from '../styles/images/logotype.jpg';
 import person from '../styles/images/person_landing_page.jpg';
 import Popup from 'reactjs-popup';
@@ -12,8 +13,15 @@ const LandingPage = ()=>{
     const [registerEmail, setRegisterEmail] = useState('');
     const [registerPassword, setRegisterPassword] = useState('');
 
+    //state for login form
+    const [loginEmail, setLoginEmail] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
+
+    //initialize navigate
+    const navigate = useNavigate();
+
     //handle register 
-    const handleRegister = (e) => {
+    const handleRegister = (e, close) => {
         e.preventDefault();
         const registerData = { 
             username: registerUsername, 
@@ -26,6 +34,28 @@ const LandingPage = ()=>{
         setRegisterUsername('');
         setRegisterEmail('');
         setRegisterPassword('');
+        close();
+    }
+
+    //handle register 
+    const handleLogin = (e) => {
+        e.preventDefault();
+        const loginData = { 
+            email: loginEmail, 
+            password: loginPassword 
+        };
+        //send POST request to server
+        axios.post('http://localhost:4000/api/loginData',loginData)
+            .then(response => {
+                console.log("Login Successful:", response);
+                navigate('/mainPage');
+            })
+            .catch(error => {
+                console.error("Login Error:", error);
+                setLoginEmail('');
+                setLoginPassword('');
+            });
+        
     }
 
     return(
@@ -47,14 +77,14 @@ const LandingPage = ()=>{
                                 <h2>Log In</h2>
                                 <div>
                                     <label>Email:</label>
-                                    <input type="email" placeholder="Enter your email" />
+                                    <input type="email" placeholder="Enter your email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} />
                                 </div>
                                 <div>
                                     <label>Password:</label>
-                                    <input type="password" placeholder="Enter your password" />
+                                    <input type="password" placeholder="Enter your password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} />
                                 </div>
                                 <div>
-                                    <button className="login-btn">Log in</button>
+                                    <button className="login-btn" onClick={handleLogin}>Log in</button>
                                 </div>
                             </div>
                         )}
@@ -77,7 +107,7 @@ const LandingPage = ()=>{
                                     <input type="password" placeholder="Enter your password" value={registerPassword} onChange={(e) => setRegisterPassword(e.target.value)} />
                                 </div>
                                 <div>
-                                    <button className="login-btn" onClick={handleRegister}>Register</button>
+                                    <button className="login-btn" onClick={(e) => handleRegister(e, close)}>Register</button>
                                 </div>
                             </div>
                         )}
