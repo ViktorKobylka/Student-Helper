@@ -23,7 +23,7 @@ app.post("/api/chat", async (req, res) => {
     //removes \( \), \[ \]
     message = message.replace(/\\\(|\\\)|\\\[|\\\]/g, "");
 
-    // removes **...**
+    //removes **...**
     message = message.replace(/\*\*(.*?)\*\*/g, "$1");
 
     res.send(message); //sends the cleaned message as plain text

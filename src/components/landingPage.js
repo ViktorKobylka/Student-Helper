@@ -48,6 +48,7 @@ const LandingPage = ()=>{
         axios.post('http://localhost:4000/api/loginData',loginData)
             .then(response => {
                 console.log("Login Successful:", response);
+                localStorage.setItem("userEmail", loginEmail); //store user's email in localStorage
                 navigate('/mainPage');
             })
             .catch(error => {

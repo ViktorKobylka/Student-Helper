@@ -51,3 +51,19 @@ app.post('/api/loginData', async (req, res) => {
         res.status(401).json({ message: "Error logging user" });
     }
 });
+
+
+app.get('/api/getUser', async (req, res) => {
+    try {
+        const email = req.query.email; //get email from query
+
+        const user = await User.findOne({ email });
+        if (user) {
+            res.status(200).json({ username: user.username });
+        } else {
+            res.status(404).json({ message: "User not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching user" });
+    }
+});
