@@ -67,3 +67,23 @@ app.get('/api/getUser', async (req, res) => {
         res.status(500).json({ message: "Error fetching user" });
     }
 });
+
+const responseSchema = new mongoose.Schema({
+    userEmail: String,
+    response: String
+});
+
+const Response = mongoose.model('Response', responseSchema);
+
+app.post("/api/saveResponse", async (req, res) => {
+    try {
+        const { userEmail, response } = req.body;
+
+        const newResponse = new Response({ userEmail, response });
+        await newResponse.save();
+
+        res.status(201).json({ message: "Response saved successfully" });
+    } catch (error) {
+        console.error("Error saving response:", error);
+    }
+});

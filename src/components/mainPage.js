@@ -41,6 +41,20 @@ const MainPage = () => {
     }
   };
 
+  const handleSave= async () => {
+    try {
+        const email = localStorage.getItem("userEmail"); //get stored email
+       
+        await axios.post("http://localhost:4000/api/saveResponse", {
+            userEmail: email,
+            response: response, 
+        });
+    } catch (error) {
+        console.error("Error saving response:", error);
+    }
+  };
+
+
   return (
     <div>
       <header className="main-header">
@@ -72,7 +86,7 @@ const MainPage = () => {
 
         <div className="response-card">
           <p>Response: {response}</p> 
-          <button>Save Response</button>
+          <button onClick={handleSave}>Save Response</button>
         </div>
       </div>
     </div>
