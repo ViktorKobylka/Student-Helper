@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";  
-import axios from "axios"; 
-import logotype from "../styles/images/logotype.jpg"; 
-import "../styles/MainPage.css"; 
+import { useEffect, useState } from "react";
+import axios from "axios";
+import logotype from "../styles/images/logotype.jpg";
+import "../styles/MainPage.css";
 
 const MainPage = () => {
   //state variables for user input and response
-  const [input, setInput] = useState(""); 
+  const [input, setInput] = useState("");
   const [response, setResponse] = useState("");
-  const [username, setUsername] = useState(""); 
+  const [username, setUsername] = useState("");
 
   //get username
   useEffect(() => {
@@ -22,7 +22,7 @@ const MainPage = () => {
     };
 
     fetchUsername(); //trigger the function
-  }, []); 
+  }, []);
 
   //send user input to the backend and get a response
   const handleSubmit = async () => {
@@ -41,16 +41,16 @@ const MainPage = () => {
     }
   };
 
-  const handleSave= async () => {
+  const handleSave = async () => {
     try {
-        const email = localStorage.getItem("userEmail"); //get stored email
-       
-        await axios.post("http://localhost:4000/api/saveResponse", {
-            userEmail: email,
-            response: response, 
-        });
+      const email = localStorage.getItem("userEmail"); //get stored email
+
+      await axios.post("http://localhost:4000/api/saveResponse", {
+        userEmail: email,
+        response: response,
+      });
     } catch (error) {
-        console.error("Error saving response:", error);
+      console.error("Error saving response:", error);
     }
   };
 
@@ -60,7 +60,7 @@ const MainPage = () => {
       <header className="main-header">
         <div className="logo-container">
           <img src={logotype} alt="logotype" />
-          <strong>Student Helper</strong> 
+          <strong>Student Helper</strong>
         </div>
         <nav className="nav-links">
           <a href="/saved">Saved Results</a>
@@ -81,11 +81,11 @@ const MainPage = () => {
             onChange={(e) => setInput(e.target.value)} //update state when user types
             placeholder="Write something"
           />
-          <button onClick={handleSubmit}>Send</button> 
+          <button onClick={handleSubmit}>Send</button>
         </div>
 
         <div className="response-card">
-          <p>Response: {response}</p> 
+          <p>Response: {response}</p>
           <button onClick={handleSave}>Save Response</button>
         </div>
       </div>

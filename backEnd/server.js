@@ -81,9 +81,31 @@ app.post("/api/saveResponse", async (req, res) => {
 
         const newResponse = new Response({ userEmail, response });
         await newResponse.save();
-
         res.status(201).json({ message: "Response saved successfully" });
     } catch (error) {
         console.error("Error saving response:", error);
+    }
+});
+
+app.delete("/api/deleteResponse/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedResponse = await Response.findByIdAndDelete(id);
+
+        res.status(200).json({ message: "Response deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting response:", error);
+    }
+});
+
+app.get("/api/savedResponses", async (req, res) => {
+    try {
+        const { email } = req.query;
+
+        const responses = await Response.find({ userEmail: email });
+        res.status(200).json(responses);
+    } catch (error) {
+        console.error("Error fetching responses:", error);
+        res.status(500).json({ message: "Server error" });
     }
 });
