@@ -9,6 +9,8 @@ const MainPage = () => {
   const [response, setResponse] = useState("");
   const [username, setUsername] = useState("");
 
+
+
   //get username
   useEffect(() => {
     const fetchUsername = async () => {
@@ -24,7 +26,6 @@ const MainPage = () => {
     fetchUsername(); //trigger the function
   }, []);
 
-  //send user input to the backend and get a response
   const handleSubmit = async () => {
     try {
       setResponse("Loading..."); //show loading message while waiting for a response
@@ -40,7 +41,7 @@ const MainPage = () => {
       setResponse("Error: Unable to fetch response."); //show error message
     }
   };
-
+  
   const handleSave = async () => {
     try {
       const email = localStorage.getItem("userEmail"); //get stored email
@@ -53,6 +54,8 @@ const MainPage = () => {
       console.error("Error saving response:", error);
     }
   };
+  
+  
 
 
   return (
@@ -64,7 +67,7 @@ const MainPage = () => {
         </div>
         <nav className="nav-links">
           <a href="/saved">Saved Results</a>
-          <a href="/schedule">Schedule</a>
+          <a href="/essay">Essay Checker</a>
           <a href="/settings">Settings</a>
         </nav>
       </header>

@@ -17,23 +17,18 @@ app.post("/api/chat", async (req, res) => {
 
     let message = response.message.content;
 
-    //removes everything inside <think>...</think>
-    message = message.replace(/<think>.*?<\/think>/gs, "").trim();
+    // Cleanup 
+    message = message
+      .replace(/<think>.*?<\/think>/gs, "")
+      .replace(/\\\(|\\\)|\\\[|\\\]/g, "")
+      .replace(/\*\*(.*?)\*\*/g, "$1")
+      .trim();
 
-    //removes \( \), \[ \]
-    message = message.replace(/\\\(|\\\)|\\\[|\\\]/g, "");
-
-    //removes **...**
-    message = message.replace(/\*\*(.*?)\*\*/g, "$1");
-
-    res.send(message); //sends the cleaned message as plain text
+    res.send(message);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Server error");
   }
 });
 
-
-
-
-app.listen(5000, () => console.log("Server running on port 5000"));
+app.listen(5000, () => console.log("AI Server running on port 5000"));

@@ -17,7 +17,7 @@ app.listen(port, () => {
 
 
 //connect to MongoDB
-mongoose.connect('mongodb+srv://admin:admin@student-helper.lwhbhrt.mongodb.net/')
+mongoose.connect('mongodb+srv://admin:admin@student-helper.lwhbhrt.mongodb.net/');
 
 //define the chema for user authentication
 const loginSchema = new mongoose.Schema({
@@ -39,7 +39,7 @@ app.post('/api/registerData',async (req, res)=>{
     } catch (error) {
         res.status(500).json({ message: "Error registering user" }); //handles errors
     }
-})
+});
 
 app.post('/api/loginData', async (req, res) => {
     const { email, password } = req.body;
@@ -109,3 +109,4 @@ app.get("/api/savedResponses", async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
+  

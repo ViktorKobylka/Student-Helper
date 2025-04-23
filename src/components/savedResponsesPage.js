@@ -41,7 +41,7 @@ const SavedResponsesPage = () => {
                 </div>
                 <nav className="nav-links">
                     <a href="/mainPage">Main Page</a>
-                    <a href="/schedule">Schedule</a>
+                    <a href="/essay">Essay Checker</a>
                     <a href="/settings">Settings</a>
                 </nav>
             </header>
