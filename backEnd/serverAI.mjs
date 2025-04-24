@@ -11,9 +11,9 @@ app.post("/api/chat", async (req, res) => {
     const { prompt } = req.body;
 
     const response = await ollama.chat({
-      model: "deepseek-r1:8b",
+      model: "deepseek-r1:1.5b",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.1 // controls creativity
+      temperature: 0.3 // controls creativity
     });
 
     let message = response.message.content;
