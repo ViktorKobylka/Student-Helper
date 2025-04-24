@@ -6,6 +6,7 @@ import MainPage from './components/mainPage';
 import SavedResponsesPage from './components/savedResponsesPage';
 import EssayPage from './components/essayPage';
 import EssayResultPage from './components/essayResultPage';
+import StudyPage from './components/studyPage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/saved" element={<SavedResponsesPage />} />
       <Route path="/essay" element={<EssayPage />} />
       <Route path="/essayResult" element={<EssayResultPage />} />
+      <Route path="/study" element={<StudyPage />} />
     </Routes>
   </Router>
   );

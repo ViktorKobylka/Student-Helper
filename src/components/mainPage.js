@@ -68,6 +68,7 @@ const MainPage = () => {
         <nav className="nav-links">
           <a href="/saved">Saved Results</a>
           <a href="/essay">Essay Checker</a>
+          <a href="/study">Study terms</a>
           <a href="/settings">Settings</a>
         </nav>
       </header>
