@@ -28,6 +28,7 @@ const MainPage = () => {
 
   const handleSubmit = async () => {
     try {
+      if (input.trim().length === 0) return;
       setResponse("Loading..."); //show loading message while waiting for a response
 
       //send POST request to server
