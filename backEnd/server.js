@@ -81,7 +81,7 @@ app.post("/api/saveResponse", async (req, res) => {
 
         const newResponse = new Response({ userEmail, response });
         await newResponse.save();
-        res.status(201).json({ message: "Response saved successfully" });
+        res.status(200).json({ message: "Response saved successfully" });
     } catch (error) {
         console.error("Error saving response:", error);
     }
@@ -106,7 +106,47 @@ app.get("/api/savedResponses", async (req, res) => {
         res.status(200).json(responses);
     } catch (error) {
         console.error("Error fetching responses:", error);
-        res.status(500).json({ message: "Server error" });
+        
     }
 });
+
+const savedTermSchema = new mongoose.Schema({
+    userEmail: String,
+    term: String,
+    definition: String
+});
+
+const SavedTerm = mongoose.model("SavedTerm", savedTermSchema);
+
+app.post("/api/saveTerm", async (req, res) => {
+    try {
+      const { userEmail, term, definition } = req.body;
+      const newTerm = new SavedTerm({ userEmail, term, definition });
+      await newTerm.save();
+      res.status(201).json({ message: "Term saved successfully" });
+    } catch (error) {
+      console.error("Error saving term:", error);    
+    }
+  });
   
+  app.get("/api/savedTerms", async (req, res) => {
+    try {
+      const { email } = req.query;
+      const terms = await SavedTerm.find({ userEmail: email });
+      res.json(terms);
+    } catch (error) {
+      console.error("Error fetching terms:", error);   
+    }
+  });
+  
+  app.delete("/api/deleteTerm/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await SavedTerm.findByIdAndDelete(id);
+      res.json({ message: "Term deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting term:", error);
+    }
+  });
+  
+ 
