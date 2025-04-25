@@ -44,6 +44,8 @@ const MainPage = () => {
   };
   
   const handleSave = async () => {
+    if (response === "Loading..." || response === "Error: Unable to fetch response.") return;
+
     try {
       const email = localStorage.getItem("userEmail"); //get stored email
 
