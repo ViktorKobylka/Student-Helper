@@ -34,7 +34,7 @@ const EssayPage = () => {
       //console.log(message);
 
       const gradeMatch = message.match(/Grade:\s*"?(.*?)"?\s*(?:\n|$)/i);
-      const explanationMatch = message.match(/Explanation:\s*"?(.*?)"?\s*(?:\n|$)/i);
+      const explanationMatch = message.match(/Explanation:\s*([\s\S]*)/i);
       const grade = gradeMatch ? gradeMatch[1].trim() : "0";
       const explanation = explanationMatch ? explanationMatch[1].trim() : "No explanation provide.";
       const essayName = await suggestEssayName();
@@ -47,7 +47,7 @@ const EssayPage = () => {
         }
       });
     } catch (error) {
-      console.error("Error grading essay:", error);
+      //console.error("Error grading essay:", error);
       setStatus("Error: Unable to grade essay.");
     }
   };
@@ -57,7 +57,7 @@ const EssayPage = () => {
       prompt:`You are an essay grading AI. Create a title for essay using up to 5 words. Return your result strictly in this format: Name: your generated title\n\n${essayText}`
     });
     const message = res.data;
-    //console.log(message);
+    console.log(message);
     const nameMatch = message.match(/Name:\s*"?(.*?)"?\s*(?:\n|$)/i);
     const essayName = nameMatch ? nameMatch[1].trim() : "Unnamed Essay";
 
