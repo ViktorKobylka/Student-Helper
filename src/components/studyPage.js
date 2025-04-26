@@ -202,9 +202,9 @@ const StudyPage = () => {
           <strong>Student Helper</strong>
         </div>
         <nav className="nav-links">
-          <a href="/saved">Saved Results</a>
-          <a href="/essay">Essay Checker</a>
-          <a href="/settings">Settings</a>
+            <a href="/mainPage">Main Page</a>
+            <a href="/essay">Essay Checker</a>
+            <a href="/saved">Saved Results</a>
         </nav>
       </header>
 
