@@ -90,15 +90,32 @@ app.post("/api/saveResponse", async (req, res) => {
 });
 
 // API endpoint to delete a response by its ID
-app.delete("/api/deleteResponse/:id", async (req, res) => {
-    try {
-        const { id } = req.params; // Get ID from route parameters
-        const deletedResponse = await Response.findByIdAndDelete(id); // Delete from DB
+app.delete("/api/deleteResponse/:id", (req, res) => {
+    const { id } = req.params;
 
-        res.status(200).json({ message: "Response deleted successfully" });
-    } catch (error) {
-        console.error("Error deleting response:", error); // Log deletion error
+    // Check if id is null or the string "null"
+    if (id === null || id === "null") {
+        console.log("Received null ID, rejecting request");
+        return res.status(400).json({ message: "Invalid ID: null value not allowed" });
     }
+
+    // Check if id is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log("Invalid ID format, skipping delete:", id);
+        return res.status(400).json({ message: "Invalid ID, not deleting from database" });
+    }
+
+    Response.findByIdAndDelete(id)
+        .then((deletedResponse) => {
+            if (!deletedResponse) {
+                return res.status(404).json({ message: "Response not found" });
+            }
+            res.json({ message: "Response deleted successfully" });
+        })
+        .catch((error) => {
+            console.error("Error deleting response:", error);
+            res.status(500).json({ message: "Error deleting response" });
+        });
 });
 
 // API endpoint to get all saved responses for a user
@@ -146,12 +163,30 @@ app.get("/api/savedTerms", async (req, res) => {
 });
 
 // API endpoint to delete a term by ID
-app.delete("/api/deleteTerm/:id", async (req, res) => {
-    try {
-        const { id } = req.params; // Get ID from route
-        await SavedTerm.findByIdAndDelete(id); // Delete term from DB
-        res.json({ message: "Term deleted successfully" }); // Confirmation message
-    } catch (error) {
-        console.error("Error deleting term:", error); // Log error
+app.delete("/api/deleteTerm/:id", (req, res) => {
+    const { id } = req.params;
+
+    // Check if id is null or the string "null"
+    if (id === null || id === "null") {
+        console.log("Received null ID, rejecting request");
+        return res.status(400).json({ message: "Invalid ID: null value not allowed" });
     }
+
+    // Check if id is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log("Invalid ID format, skipping delete:", id);
+        return res.status(400).json({ message: "Invalid ID, not deleting from database" });
+    }
+
+    SavedTerm.findByIdAndDelete(id)
+        .then((deletedTerm) => {
+            if (!deletedTerm) {
+                return res.status(404).json({ message: "Term not found" });
+            }
+            res.json({ message: "Term deleted successfully" });
+        })
+        .catch((error) => {
+            console.error("Error deleting term:", error);
+            res.status(500).json({ message: "Error deleting term" });
+        });
 });
