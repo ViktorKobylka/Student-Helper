@@ -49,7 +49,15 @@ const LandingPage = ()=>{
             .then(response => {
                 console.log("Login Successful:", response);
                 localStorage.setItem("userEmail", loginEmail); //store user's email in localStorage
-                navigate('/mainPage');
+                axios.get(`http://localhost:4000/api/getUser?email=${loginEmail}`)
+                .then(res => {
+                    const username = res.data.username;
+                    localStorage.setItem("cachedUsername", username); 
+                    navigate('/mainPage');
+                })
+                .catch(error => {
+                    console.error("Error fetching username:", error);
+                });
             })
             .catch(error => {
                 console.error("Login Error:", error);
