@@ -4,37 +4,47 @@ import logotype from "../styles/images/logotype.jpg";
 import "../styles/MainPage.css";
 
 const MainPage = () => {
-  //state variables for user input and response
+  // States for user input, AI response, username, and email
   const [input, setInput] = useState("");
   const [response, setResponse] = useState("");
   const [username, setUsername] = useState("");
   const [, setSavedResponses] = useState([]);
   const [email, setEmail] = useState(null);
 
+  // Fetch email from localStorage when component mounts
   useEffect(() => {
-    const storedEmail = localStorage.getItem("userEmail"); 
+    const storedEmail = localStorage.getItem("userEmail");
     setEmail(storedEmail);
   }, []);
 
+  // Get username from localStorage (cached at login)
+  const fetchUsername = useCallback(() => {
+    const cachedUsername = localStorage.getItem("cachedUsername");
+    if (cachedUsername) {
+      setUsername(cachedUsername);
+    }
+  }, []);
+
+  // Save offline responses that were pending
   const processSaveQueue = useCallback(async () => {
     const pending = JSON.parse(localStorage.getItem("pendingResponseSaves") || "[]");
-    if (pending.length === 0) return;
+    if (pending.length === 0) return; // No pending saves
 
     const successfullySaved = [];
 
     for (const item of pending) {
       try {
         await axios.post("http://localhost:4000/api/saveResponse", item);
-        successfullySaved.push(item);
-        console.log("Saved:", item.response.substring(0, 20) + "...");
+        successfullySaved.push(item); // If save is successful, add to list
       } catch (error) {
         console.log("Failed to save:", item.response.substring(0, 20) + "...");
       }
     }
 
+    // Remove successfully saved items from pending queue
     const stillPending = pending.filter(
-      pendingItem => !successfullySaved.some(saved => 
-        saved.userEmail === pendingItem.userEmail && 
+      pendingItem => !successfullySaved.some(saved =>
+        saved.userEmail === pendingItem.userEmail &&
         saved.response === pendingItem.response
       )
     );
@@ -42,203 +52,142 @@ const MainPage = () => {
     localStorage.setItem("pendingResponseSaves", JSON.stringify(stillPending));
   }, []);
 
-  const fetchUsername = useCallback(() => {
-    const cachedUsername = localStorage.getItem("cachedUsername");
-    if (cachedUsername) {
-      setUsername(cachedUsername);
-    }
-  }, []);
-  
+  // Load previously saved responses and handle offline cases
   const loadSavedResponses = useCallback(async () => {
-    if (!email) return;
-    
+    if (!email) return; // If no email, skip
+
     const localData = localStorage.getItem("offlineResponses");
     let localResponses = localData ? JSON.parse(localData) : [];
-  
+
     const pending = JSON.parse(localStorage.getItem("pendingResponseSaves") || "[]");
     const userPending = pending.filter(item => item.userEmail === email);
-    
+
     const pendingItems = userPending.map((item, index) => ({
-      _id: `pending-${index}-${Date.now()}`, 
+      _id: `pending-${index}-${Date.now()}`,
       userEmail: item.userEmail,
       response: item.response
     }));
-  
+
+    // Merge pending saves into local responses
     const combinedResponses = [...localResponses];
-    
     for (const pendingItem of pendingItems) {
       const isDuplicate = combinedResponses.some(
-        item => item.response === pendingItem.response && 
-              item.userEmail === pendingItem.userEmail
+        item => item.response === pendingItem.response &&
+                item.userEmail === pendingItem.userEmail
       );
-      
       if (!isDuplicate) {
         combinedResponses.push(pendingItem);
       }
     }
-    
+
     setSavedResponses(combinedResponses);
-  
+
     if (navigator.onLine) {
+      // If online, try syncing with server
       await processSaveQueue();
-      
       try {
         const res = await axios.get(`http://localhost:4000/api/savedResponses?email=${email}`);
-       
-        const updatedPending = JSON.parse(localStorage.getItem("pendingResponseSaves") || "[]");
-        const updatedUserPending = updatedPending.filter(item => item.userEmail === email);
-        
-        if (updatedUserPending.length > 0) {
-          const updatedPendingItems = updatedUserPending.map((item, index) => ({
-            _id: `pending-${index}-${Date.now()}`,
-            userEmail: item.userEmail,
-            response: item.response
-          }));
-          
-          const updatedCombined = [...res.data];
-          
-          for (const pendingItem of updatedPendingItems) {
-            const isDuplicate = updatedCombined.some(
-              item => item.response === pendingItem.response && 
-                    item.userEmail === pendingItem.userEmail
-            );
-            
-            if (!isDuplicate) {
-              updatedCombined.push(pendingItem);
-            }
-          }
-          
-          setSavedResponses(updatedCombined);
-          localStorage.setItem("offlineResponses", JSON.stringify(res.data)); 
-        } else {
-          setSavedResponses(res.data);
-          localStorage.setItem("offlineResponses", JSON.stringify(res.data));
-        }
+        localStorage.setItem("offlineResponses", JSON.stringify(res.data));
+        setSavedResponses(res.data);
       } catch (error) {
         console.log("Using cached responses due to fetch error:", error.message);
       }
     } else {
-      console.log("Offline mode: using only cached responses");
+      console.log("Offline mode: using cached responses only");
     }
   }, [email, processSaveQueue]);
 
+  // Fetch user data when component mounts
   useEffect(() => {
     fetchUsername();
     if (email) {
-      loadSavedResponses(); 
+      loadSavedResponses();
     }
   }, [email, fetchUsername, loadSavedResponses]);
 
+  // Handle coming back online to re-sync data
   useEffect(() => {
     const handleOnline = async () => {
       if (!email) return;
       await processSaveQueue();
-      await loadSavedResponses(); 
+      await loadSavedResponses();
     };
 
     window.addEventListener("online", handleOnline);
     return () => window.removeEventListener("online", handleOnline);
   }, [email, processSaveQueue, loadSavedResponses]);
 
+  // Send user input to AI service
   const handleSubmit = async () => {
-    if (input.trim().length === 0) return;
-    setResponse("Loading..."); //show loading message while waiting for a response
+    if (input.trim().length === 0) return; // Do nothing if input is empty
+    setResponse("Loading..."); // Show loading indicator
     try {
-      //send POST request to server
       const res = await axios.post("http://localhost:5000/api/chat", {
-        prompt: input, //sending user input as "prompt"
+        prompt: input,
       });
-
-      setResponse(res.data); //update state with the received response
+      setResponse(res.data); // Set AI response
     } catch (error) {
       console.error("Error fetching response:", error);
-      setResponse("Error: Unable to fetch response."); //show error message
+      setResponse("Error: Unable to fetch response."); // Handle error
     }
   };
-  
+
+  // Save AI response to server or offline queue
   const handleSave = async () => {
     if (!response || response === "Loading..." || response.startsWith("Error")) return;
-    if (!email) {
-      console.error("Cannot save: no email available");
-      return;
-    }
-
-    const responseToSave = response;
+    if (!email) return;
 
     const newItem = {
       userEmail: email,
-      response: responseToSave,
+      response: response,
     };
 
- 
-    setInput("");
-    setResponse("");
+    setInput(""); // Clear input field
+    setResponse(""); // Clear displayed response
 
-   
     const pending = JSON.parse(localStorage.getItem("pendingResponseSaves") || "[]");
-    
-    
+
     const isDuplicateInQueue = pending.some(
-      item => item.userEmail === newItem.userEmail && 
-              item.response === newItem.response
+      item => item.userEmail === newItem.userEmail && item.response === newItem.response
     );
-    
+
     if (!isDuplicateInQueue) {
-    
-      pending.push(newItem);
+      pending.push(newItem); // Add to offline queue if not already pending
       localStorage.setItem("pendingResponseSaves", JSON.stringify(pending));
     }
-    
-  
+
     const tempId = `pending-${pending.length - 1}-${Date.now()}`;
-    const newItemWithId = { 
-      _id: tempId, 
-      userEmail: newItem.userEmail,
-      response: newItem.response 
-    };
-    
-  
+    const newItemWithId = { _id: tempId, ...newItem };
+
     setSavedResponses(prev => {
-      
       const isDuplicate = prev.some(
-        item => item.response === newItemWithId.response && 
-                item.userEmail === newItemWithId.userEmail
+        item => item.response === newItemWithId.response && item.userEmail === newItemWithId.userEmail
       );
-      
-      if (isDuplicate) {
-        return prev;
-      } else {
-        return [...prev, newItemWithId];
-      }
+      return isDuplicate ? prev : [...prev, newItemWithId];
     });
-    
+
     if (!navigator.onLine) {
-      console.log("Offline: item queued for later save");
-      return;
+      console.log("Offline: queued for save");
+      return; // If offline, don't attempt to send to server
     }
 
     try {
-      
       await axios.post("http://localhost:4000/api/saveResponse", newItem);
-      
-     
       const res = await axios.get(`http://localhost:4000/api/savedResponses?email=${email}`);
-      
       localStorage.setItem("offlineResponses", JSON.stringify(res.data));
-      
-      const updatedPending = pending.filter(item => 
+
+      const updatedPending = pending.filter(item =>
         !(item.userEmail === newItem.userEmail && item.response === newItem.response)
       );
       localStorage.setItem("pendingResponseSaves", JSON.stringify(updatedPending));
-      
-      await loadSavedResponses();
+      await loadSavedResponses(); // Refresh list
     } catch (error) {
-      console.log("Server unavailable, item queued for saving later");
+      console.log("Server unavailable, will retry later");
     }
   };
 
   return (
-    <div>
+    <div>  
       <header className="main-header">
         <div className="logo-container">
           <img src={logotype} alt="logotype" />
@@ -253,14 +202,14 @@ const MainPage = () => {
 
       <div className="main-content">
         <div className="greeting">
-          {username && <h2>Welcome, {username}!</h2>} {/*show if username exists*/}
+          {username && <h2>Welcome, {username}!</h2>}
         </div>
 
         <div className="input-card">
           <input
             type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)} //update state when user types
+            onChange={(e) => setInput(e.target.value)}
             placeholder="Write something"
           />
           <button onClick={handleSubmit}>Send</button>

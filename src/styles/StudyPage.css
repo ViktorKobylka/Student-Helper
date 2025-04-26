@@ -1,5 +1,4 @@
-/* MainPage.css */
-
+/* StudyPage.css */
 
 .main-header {
     display: flex;
@@ -7,52 +6,43 @@
     align-items: center;
     background: #f8f8f8;
     padding: 20px;
-}
-
-.logo-container {
+  }
+  
+  .logo-container {
     display: flex;
     align-items: center;
-}
-
-.logo-container img {
+  }
+  
+  .logo-container img {
     height: 50px;
     margin-right: 15px;
-}
-
-.logo-container strong {
+  }
+  
+  .logo-container strong {
     font-size: 24px;
     font-family: Arial, sans-serif;
-}
-
-
-.nav-links a {
+  }
+  
+  .nav-links a {
     margin-left: 20px;
     text-decoration: none;
     color: #2f30318b;
     font-weight: bold;
     font-size: 16px;
-}
-
-.nav-links a:hover {
+  }
+  
+  .nav-links a:hover {
     text-decoration: underline;
-}
-
-
-.main-content {
+  }
+  
+  .main-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 40px 20px;
-}
-
-
-.greeting h2 {
-    font-size: 32px;
-    margin-bottom: 30px;
-}
-
-
-.input-card {
+  }
+  
+  .input-card {
     background: #f8f8f8;
     padding: 30px;
     border-radius: 15px;
@@ -60,18 +50,18 @@
     width: 100%;
     max-width: 600px;
     margin-bottom: 20px;
-}
-
-.input-card input {
+  }
+  
+  .input-card input {
     width: 100%;
     padding: 15px;
     font-size: 18px;
     border: 2px solid #ccc;
     border-radius: 5px;
     margin-bottom: 15px;
-}
-
-.input-card button {
+  }
+  
+  .input-card button {
     background: #007bff;
     color: white;
     padding: 12px 20px;
@@ -80,14 +70,13 @@
     border-radius: 5px;
     cursor: pointer;
     width: 100%;
-}
-
-.input-card button:hover {
+  }
+  
+  .input-card button:hover {
     background: #0056b3;
-}
-
-
-.response-card {
+  }
+  
+  .response-card {
     background: #f8f8f8;
     padding: 25px;
     border-radius: 15px;
@@ -95,14 +84,15 @@
     width: 100%;
     max-width: 600px;
     text-align: center;
-}
-
-.response-card p {
+    margin-bottom: 20px;
+  }
+  
+  .response-card p {
     font-size: 18px;
     margin-bottom: 15px;
-}
-
-.response-card button {
+  }
+  
+  .response-card button {
     background: #4CAF50;
     color: white;
     padding: 10px 20px;
@@ -110,39 +100,52 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
-
-.response-card button:hover {
+  }
+  
+  .response-card button:hover {
     background: #3e8e41;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .input-card, .response-card {
-        padding: 20px;
+  }
+  
+  h3 {
+    font-size: 24px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .input-card,
+    .response-card {
+      padding: 20px;
     }
-
-    .greeting h2 {
-        font-size: 28px;
-    }
-
-    .input-card button, .response-card button {
-        font-size: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .greeting h2 {
-        font-size: 24px;
-    }
-
+  
     .input-card input {
-        font-size: 16px;
+      font-size: 16px;
     }
-
-    .input-card button, .response-card button {
-        font-size: 14px;
+  
+    .input-card button,
+    .response-card button {
+      font-size: 15px;
     }
-}
-
+  }
+  
+  @media (max-width: 480px) {
+    .logo-container strong {
+      font-size: 20px;
+    }
+  
+    .input-card input {
+      font-size: 15px;
+    }
+  
+    .input-card button,
+    .response-card button {
+      font-size: 14px;
+    }
+  
+    h3 {
+      font-size: 20px;
+    }
+  }
   

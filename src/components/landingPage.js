@@ -8,63 +8,63 @@ import '../styles/LandingPage.css';
 
 //LandingPage component: represents the landing page of the "Student Helper" website
 const LandingPage = ()=>{
-    //state for registration form
+    // State variables for registration form inputs
     const [registerUsername, setRegisterUsername] = useState('');
     const [registerEmail, setRegisterEmail] = useState('');
     const [registerPassword, setRegisterPassword] = useState('');
 
-    //state for login form
+    // State variables for login form inputs
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
 
-    //initialize navigate
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Initialize navigate function for redirection
 
-    //handle register 
+    // Function to handle user registration
     const handleRegister = (e, close) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent page reload on form submission
         const registerData = { 
             username: registerUsername, 
             email: registerEmail, 
             password: registerPassword 
         };
-        //send POST request to server
-        axios.post('http://localhost:4000/api/registerData',registerData);
-        //clear fields
+        // Send POST request to server with registration data
+        axios.post('http://localhost:4000/api/registerData', registerData);
+        // Clear registration input fields
         setRegisterUsername('');
         setRegisterEmail('');
         setRegisterPassword('');
-        close();
+        close(); // Close the popup modal
     }
 
-    //handle register 
+    // Function to handle user login
     const handleLogin = (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent page reload on form submission
         const loginData = { 
             email: loginEmail, 
             password: loginPassword 
         };
-        //send POST request to server
-        axios.post('http://localhost:4000/api/loginData',loginData)
+        // Send POST request to server with login data
+        axios.post('http://localhost:4000/api/loginData', loginData)
             .then(response => {
-                console.log("Login Successful:", response);
-                localStorage.setItem("userEmail", loginEmail); //store user's email in localStorage
+                console.log("Login Successful:", response); // Log successful login
+                localStorage.setItem("userEmail", loginEmail); // Save user's email to localStorage
+
+                // After login, fetch username by email
                 axios.get(`http://localhost:4000/api/getUser?email=${loginEmail}`)
-                .then(res => {
-                    const username = res.data.username;
-                    localStorage.setItem("cachedUsername", username); 
-                    navigate('/mainPage');
-                })
-                .catch(error => {
-                    console.error("Error fetching username:", error);
-                });
+                    .then(res => {
+                        const username = res.data.username;
+                        localStorage.setItem("cachedUsername", username); // Save username to localStorage
+                        navigate('/mainPage'); // Navigate to main page
+                    })
+                    .catch(error => {
+                        console.error("Error fetching username:", error); // Log error if fetching username fails
+                    });
             })
             .catch(error => {
-                console.error("Login Error:", error);
-                setLoginEmail('');
-                setLoginPassword('');
+                console.error("Login Error:", error); // Log login error
+                setLoginEmail(''); // Clear email field
+                setLoginPassword(''); // Clear password field
             });
-        
     }
 
     return(

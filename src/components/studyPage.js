@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import logotype from "../styles/images/logotype.jpg";
+import "../styles/StudyPage.css";
 
 const StudyPage = () => {
   const [termText, setTermText] = useState("");
@@ -8,6 +9,7 @@ const StudyPage = () => {
   const [savedTerms, setSavedTerms] = useState([]);
   const email = localStorage.getItem("userEmail");
 
+  // Function to process (retry) pending term deletions when online
   const processDeleteQueue = async () => {
     const pending = JSON.parse(localStorage.getItem("pendingDeletes") || "[]");
     if (pending.length === 0) return;
@@ -17,17 +19,19 @@ const StudyPage = () => {
     for (const id of pending) {
       try {
         await axios.delete(`http://localhost:4000/api/deleteTerm/${id}`);
-        successfullyDeleted.push(id); 
+        successfullyDeleted.push(id); // Collect IDs successfully deleted
         console.log("Delete:", id);
       } catch (error) {
         console.log("Error to delete:", id);
       }
     }
 
+    // Save only IDs still pending deletion
     const stillPending = pending.filter(id => !successfullyDeleted.includes(id));
     localStorage.setItem("pendingDeletes", JSON.stringify(stillPending));
   };
 
+  // Function to process (retry) pending term saves when online
   const processSaveQueue = async () => {
     const pending = JSON.parse(localStorage.getItem("pendingSaves") || "[]");
     if (pending.length === 0) return;
@@ -41,13 +45,14 @@ const StudyPage = () => {
           term: item.term,
           definition: item.definition
         });
-        successfullySaved.push(item);
+        successfullySaved.push(item); // Collect items successfully saved
         console.log("Save:", item.term);
       } catch (error) {
         console.log("Failed to save:", item.term);
       }
     }
   
+    // Keep only items that were not successfully saved
     const stillPending = pending.filter(pendingItem =>
       !successfullySaved.some(savedItem =>
         savedItem.email === pendingItem.email &&
@@ -58,26 +63,28 @@ const StudyPage = () => {
   
     localStorage.setItem("pendingSaves", JSON.stringify(stillPending));
   };
-  
-  
- 
+
+  // Load saved terms when the component mounts
   useEffect(() => {
     const loadData = async () => {
       const localData = localStorage.getItem("savedTerms");
       let localTerms = localData ? JSON.parse(localData) : [];
 
+      // Include offline-created terms not yet synced
       const pendingSaves = JSON.parse(localStorage.getItem("pendingSaves") || "[]");
       const offlineTerms = pendingSaves.map((t, index) => ({
         ...t,
-        _id: `pending-${index}-${t.term}` 
+        _id: `pending-${index}-${t.term}` // Temporary ID
       }));
 
       setSavedTerms([...localTerms, ...offlineTerms]);
 
+      // Process queued offline changes first
       await processDeleteQueue();
       await processSaveQueue();
 
       try {
+        // Load the latest terms from server
         const res = await axios.get(`http://localhost:4000/api/savedTerms?email=${email}`);
         setSavedTerms(res.data);
         localStorage.setItem("savedTerms", JSON.stringify(res.data));
@@ -89,7 +96,7 @@ const StudyPage = () => {
     loadData();
   }, [email]);
 
- 
+  // Reload data and sync queues when back online
   useEffect(() => {
     const handleOnline = async () => {
       await processDeleteQueue();
@@ -108,7 +115,7 @@ const StudyPage = () => {
     return () => window.removeEventListener("online", handleOnline);
   }, [email]);
 
-
+  // Handle submitting a term to generate its definition
   const handleSubmit = async () => {
     if (termText.trim().length === 0) return;
     setDefinition("Loading...");
@@ -124,34 +131,41 @@ const StudyPage = () => {
     }
   };
 
+  // Handle saving a term and its definition
   const handleSave = async () => {
     if (definition === "Loading..." || definition === "Error: Unable to fetch response.") return;
 
+    // Create a new term object
     const newTerm = {
-      _id: `temp-${Date.now()}`, 
+      _id: `temp-${Date.now()}`, // Temporary ID
       email,
       term: termText,
       definition
     };
 
+    // Update local saved terms immediately
     const updated = [...savedTerms, newTerm];
     setSavedTerms(updated);
     localStorage.setItem("savedTerms", JSON.stringify(updated));
 
+    // Reset input fields
     setTermText("");
     setDefinition("");
 
     try {
+      // Try saving to server
       await axios.post("http://localhost:4000/api/saveTerm", {
         userEmail: email,
         term: termText,
         definition
       });
 
+      // Refresh terms after successful save
       const res = await axios.get(`http://localhost:4000/api/savedTerms?email=${email}`);
       setSavedTerms(res.data);
       localStorage.setItem("savedTerms", JSON.stringify(res.data));
     } catch (error) {
+      // If save fails, queue it for later
       console.log("Queued for saving later");
       const pending = JSON.parse(localStorage.getItem("pendingSaves") || "[]");
       pending.push({
@@ -161,19 +175,20 @@ const StudyPage = () => {
       });
       localStorage.setItem("pendingSaves", JSON.stringify(pending));
     }
-
   };
-  
 
+  // Handle deleting a saved term
   const handleDelete = async (id) => {
     console.log("Deleting:", id);
 
+    // Remove term immediately from local state
     setSavedTerms(prev => {
       const updated = prev.filter(term => term._id !== id);
       localStorage.setItem("savedTerms", JSON.stringify(updated));
       return updated;
     });
 
+    // Queue deletion locally
     const pending = JSON.parse(localStorage.getItem("pendingDeletes") || "[]");
     if (!pending.includes(id)) {
       pending.push(id);
@@ -181,12 +196,15 @@ const StudyPage = () => {
     }
 
     try {
+      // Try deleting on server
       await axios.delete(`http://localhost:4000/api/deleteTerm/${id}`);
       console.log("Deleted from server");
 
+      // Remove from pending list after successful deletion
       const updatedPending = pending.filter(p => p !== id);
       localStorage.setItem("pendingDeletes", JSON.stringify(updatedPending));
     } catch (error) {
+      // If failed, keep it queued
       console.log("Queued for deletion later");
     }
   };

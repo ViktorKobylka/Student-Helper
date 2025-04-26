@@ -1,10 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import logotype from "../styles/images/logotype.jpg";
 import "../styles/MainPage.css";
+import "../styles/EssayResultPage.css";
 
 const EssayResultPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  // Destructure essayName, grade, and explanation from the location state; fallback to {} if state is undefined
   const { essayName, grade, explanation } = location.state || {};
 
   return (

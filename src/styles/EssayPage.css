@@ -1,0 +1,116 @@
+/* EssayPage.css */
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f8f8;
+    padding: 20px;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo-container img {
+    height: 50px;
+    margin-right: 15px;
+  }
+  
+  .logo-container strong {
+    font-size: 24px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .nav-links a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #2f30318b;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .nav-links a:hover {
+    text-decoration: underline;
+  }
+  
+  .main-content {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  
+  .input-card {
+    background: #f8f8f8;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 700px;
+  }
+  
+  .input-card input {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .input-card button {
+    background: #007bff;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .input-card button:hover {
+    background: #0056b3;
+  }
+  
+  .input-card p {
+    font-size: 16px;
+    margin-top: 10px;
+    color: #333;
+  }
+  
+  .error p {
+    color: red;
+    font-weight: bold;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .input-card {
+      padding: 20px;
+    }
+  
+    .input-card input {
+      font-size: 16px;
+    }
+  
+    .input-card button {
+      font-size: 15px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .logo-container strong {
+      font-size: 20px;
+    }
+  
+    .input-card input {
+      font-size: 15px;
+    }
+  
+    .input-card button {
+      font-size: 14px;
+    }
+  }
+  

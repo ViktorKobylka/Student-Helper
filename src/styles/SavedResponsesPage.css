@@ -1,5 +1,4 @@
-/* MainPage.css */
-
+/* SavedResponsesPage.css */
 
 .main-header {
     display: flex;
@@ -24,7 +23,6 @@
     font-family: Arial, sans-serif;
 }
 
-
 .nav-links a {
     margin-left: 20px;
     text-decoration: none;
@@ -37,7 +35,6 @@
     text-decoration: underline;
 }
 
-
 .main-content {
     display: flex;
     flex-direction: column;
@@ -45,47 +42,11 @@
     padding: 40px 20px;
 }
 
-
-.greeting h2 {
+.main-content h2 {
     font-size: 32px;
     margin-bottom: 30px;
+    color: #333;
 }
-
-
-.input-card {
-    background: #f8f8f8;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: 20px;
-}
-
-.input-card input {
-    width: 100%;
-    padding: 15px;
-    font-size: 18px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.input-card button {
-    background: #007bff;
-    color: white;
-    padding: 12px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-}
-
-.input-card button:hover {
-    background: #0056b3;
-}
-
 
 .response-card {
     background: #f8f8f8;
@@ -94,12 +55,21 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     width: 100%;
     max-width: 600px;
+    margin-bottom: 20px;
     text-align: center;
 }
 
 .response-card p {
     font-size: 18px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.response-card span {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #888;
 }
 
 .response-card button {
@@ -116,33 +86,31 @@
     background: #3e8e41;
 }
 
-/* Responsive design */
+/* Responsive Design */
 @media (max-width: 768px) {
-    .input-card, .response-card {
-        padding: 20px;
-    }
-
-    .greeting h2 {
+    .main-content h2 {
         font-size: 28px;
     }
 
-    .input-card button, .response-card button {
+    .response-card {
+        padding: 20px;
+    }
+
+    .response-card button {
         font-size: 15px;
     }
 }
 
 @media (max-width: 480px) {
-    .greeting h2 {
+    .main-content h2 {
         font-size: 24px;
     }
 
-    .input-card input {
+    .response-card p {
         font-size: 16px;
     }
 
-    .input-card button, .response-card button {
+    .response-card button {
         font-size: 14px;
     }
 }
-
-  

@@ -1,0 +1,97 @@
+/* EssayResultPage.css */
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f8f8;
+    padding: 20px;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo-container img {
+    height: 50px;
+    margin-right: 15px;
+  }
+  
+  .logo-container strong {
+    font-size: 24px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .nav-links a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #2f30318b;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .nav-links a:hover {
+    text-decoration: underline;
+  }
+  
+  .main-content {
+    padding: 40px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .main-content h2 {
+    font-size: 28px;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+  
+  .response-card {
+    background: #f8f8f8;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    margin-bottom: 30px;
+  }
+  
+  .response-card p {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  
+  .response-card strong {
+    font-weight: bold;
+  }
+  
+  button {
+    display: block;
+    background: #007bff;
+    color: white;
+    padding: 12px 25px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 auto;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  @media (max-width: 768px) {
+    .main-content {
+      padding: 20px;
+    }
+  
+    .response-card p {
+      font-size: 16px;
+    }
+  
+    button {
+      font-size: 15px;
+      padding: 10px 20px;
+    }
+  }
+  
